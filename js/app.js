@@ -1,10 +1,12 @@
 (function() {
   'use strict';
-
+  //IS THIS THE SAME AS DOCUMENT.ready????
+  //yes. https://www.sitepoint.com/types-document-ready/
   const movies = [];
 
   const renderMovies = function() {
     $('#listings').empty();
+    // This method removes not only child (and other descendant) elements, but also any text within the set of matched elements.
 
     for (const movie of movies) {
       const $col = $('<div>').addClass('col s6');
@@ -17,7 +19,10 @@
         'data-tooltip': movie.title
       });
 
-      $title.tooltip({ delay: 50 }).text(movie.title);
+      $title.tooltip({
+        delay: 50
+      }).text(movie.title);
+      //if hover the element with mouse, the title attribute is displayed in a little box next to the element
 
       const $poster = $('<img>').addClass('poster');
 
@@ -55,6 +60,70 @@
       $('.modal-trigger').leanModal();
     }
   };
+  // :::::::::::::::::::::::::::::::::::::::::::::::::::::
+  $(document).on('ready', () => {
+    console.log("ready");
+    //EVENT HANDLER FOR input button
+    $("form").on("submit", function(event) {
+      console.log("HEY");
+      event.preventDefault();
+      //the default action of the event will not be triggered.
+      var searchTerm = $("#search").val().trim();
+      //console.log(searchTerm);
 
-  // ADD YOUR CODE HERE
-})();
+      //search term will be the value of whatever user puts into input id = search.
+      //plug searchTerm into getResults function
+      getResults(searchTerm);
+
+    });
+
+    function getResults(searchTerm) {
+      $.ajax({
+        url: 'https://omdb-api.now.sh/',
+        method: "GET",
+        dataType: "json",
+        data: {
+          s: searchTerm
+        }
+      }).done((response) => {
+        console.log("response is:");
+        console.log(response);
+        var searchResult = response.Search;
+        console.log( "searchResult is:");
+        console.log(searchResult);
+        parseMovies(searchResult);
+      });
+    }
+
+
+    function parseMovies(searchResult){
+      var movies = [];
+      for (let i = 0; i<searchResult.length; i++){
+        let movie= {
+          id: searchResult[i].imdbID,
+          poster: searchResult[i].Poster,
+          title: searchResult[i].Title,
+          year: searchResult[i].Year,
+          //create a movie object for each movieResponse (item) of searchResult
+        }
+        console.log("movie is:");
+        console.log(movie);
+        movies.push(movie);
+
+      }
+      console.log(movies);
+      renderMovies(movies);
+    }
+
+    function renderMovies(){
+      
+
+    }
+
+
+
+
+    // ADD YOUR CODE HERE
+  }); //end of document.ready fn
+  //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+})(); //END OF first thingy fn.
