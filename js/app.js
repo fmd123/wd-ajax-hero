@@ -1,13 +1,12 @@
 (function() {
   'use strict';
-  //IS THIS THE SAME AS DOCUMENT.ready????
-  //yes. https://www.sitepoint.com/types-document-ready/
-  const movies = [];
+  var movies = [];
 
   const renderMovies = function() {
+    console.log("render movies here");
     $('#listings').empty();
     // This method removes not only child (and other descendant) elements, but also any text within the set of matched elements.
-
+    console.log( "inside render: ", movies);
     for (const movie of movies) {
       const $col = $('<div>').addClass('col s6');
       const $card = $('<div>').addClass('card hoverable');
@@ -62,11 +61,11 @@
   };
   // :::::::::::::::::::::::::::::::::::::::::::::::::::::
   $(document).on('ready', () => {
-    console.log("ready");
+
     //EVENT HANDLER FOR input button
     $("form").on("submit", function(event) {
-      console.log("HEY");
       event.preventDefault();
+
       //the default action of the event will not be triggered.
       var searchTerm = $("#search").val().trim();
       //console.log(searchTerm);
@@ -74,10 +73,13 @@
       //search term will be the value of whatever user puts into input id = search.
       //plug searchTerm into getResults function
       getResults(searchTerm);
+      $("#search").text("");
+      movies = [];
 
     });
 
     function getResults(searchTerm) {
+
       $.ajax({
         url: 'https://omdb-api.now.sh/',
         method: "GET",
@@ -97,7 +99,6 @@
 
 
     function parseMovies(searchResult){
-      var movies = [];
       for (let i = 0; i<searchResult.length; i++){
         let movie= {
           id: searchResult[i].imdbID,
@@ -106,19 +107,16 @@
           year: searchResult[i].Year,
           //create a movie object for each movieResponse (item) of searchResult
         }
-        console.log("movie is:");
-        console.log(movie);
+        // console.log("movie is:");
+        // console.log(movie);
         movies.push(movie);
+        console.log("movies: ", movies);
 
       }
       console.log(movies);
-      renderMovies(movies);
+      renderMovies();
     }
 
-    function renderMovies(){
-      
-
-    }
 
 
 
