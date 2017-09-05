@@ -61,22 +61,31 @@
   };
   // :::::::::::::::::::::::::::::::::::::::::::::::::::::
   $(document).on('ready', () => {
+    //ADD ERROR MESSAGE IF SEARCH HAS NULL RESULTS!!!!!!!
 
     //EVENT HANDLER FOR input button
     $("form").on("submit", function(event) {
+    
+      if (!document.getElementById('searchBox').value){
+        console.log("no word")}
       event.preventDefault();
-
       //the default action of the event will not be triggered.
+
       var searchTerm = $("#search").val().trim();
+      console.log(searchTerm);
+      
+         $(["#search"].placeholder).text("PLEASE ENTER A VALID SEARCH TERM");
+      
       //console.log(searchTerm);
 
       //search term will be the value of whatever user puts into input id = search.
       //plug searchTerm into getResults function
       getResults(searchTerm);
       $("#search").text("");
+      //reset search input to ""
       movies = [];
-
-    });
+      
+    });//end of Event Handler
 
     function getResults(searchTerm) {
 
